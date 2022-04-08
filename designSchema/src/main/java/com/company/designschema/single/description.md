@@ -11,5 +11,49 @@
 ### 4.分类
 #### 1）饿汉式
     类初始化时，创建对象，使用于线程安全且单例内存较小的场景
+代码如下：
+```java
+    public class SingletonBadMash {
+      private static SingletonBadMash singleInstance = new SingletonBadMash();
+    
+      private SingletonBadMash(){};
+    
+      public static SingletonBadMash getInstance() {
+        return singleInstance;
+      }
+    }
+```
+
 #### 2）懒汉式
     什么时候用，什么时候创建
+代码如下：
+```java
+public class SingleonIdler {
+	private static SingleonIdler singleonIdler = null;
+
+	private SingleonIdler() {
+	}
+
+	/**
+	 * 此方法线程不安全，多线程下有可能造成多个对象
+	 * @return
+	 */
+	public static synchronized SingleonIdler getInstance() {
+		if (singleonIdler == null) {
+			singleonIdler = new SingleonIdler();
+		}
+		return singleonIdler;
+	}
+
+	/**
+	 * 线程安全
+	 * @return
+	 */
+	public static synchronized SingleonIdler getSafeInstance() {
+		if (singleonIdler == null) {
+			singleonIdler = new SingleonIdler();
+		}
+		return singleonIdler;
+	}
+}
+```
