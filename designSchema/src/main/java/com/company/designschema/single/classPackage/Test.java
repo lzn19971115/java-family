@@ -1,4 +1,4 @@
-package com.company.designschema.single;
+package com.company.designschema.single.classPackage;
 
 public class Test {
 	public static void main(String[] args) {

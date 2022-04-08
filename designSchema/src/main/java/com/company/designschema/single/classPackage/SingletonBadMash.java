@@ -1,4 +1,4 @@
-package com.company.designschema.single;
+package com.company.designschema.single.classPackage;
 
 /**
  * 饿汉式
