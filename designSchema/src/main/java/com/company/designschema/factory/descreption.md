@@ -123,5 +123,7 @@ public class ProductFactory extends FactoryMethod {
 由下图可看，抽象工厂可分为，抽象工厂，具体工厂实现，抽象类
 ![抽象工厂](https://mmbiz.qpic.cn/mmbiz_jpg/uChmeeX1FpwXtrHCm7mUXRJDBSRMb8zt8YTuib7O3YoGLSvO24N9f7DDhFdqKt4XEmyAgCanWVp6CgLO5NJjF9w/640?wx_fmt=jpeg&wxfrom=5&wx_lazy=1&wx_co=1 "抽象工厂图")
 
-### 如何去选择？
-    如果对象创建逻辑复杂，然后根据创建对象类别多少去选择工厂方法或抽象工厂，否则选择简单工厂
+### 如何去选择？(来自设计模式之美)
+    当对象的创建逻辑比较复杂，不只是简单的 new 一下就可以，而是要组合其他类对象，做各种初始化操作的时候，我们推荐使用
+    
+    工厂方法模式，将复杂的创建逻辑拆分到多个工厂类中，让每个工厂类都不至于过于复杂。
