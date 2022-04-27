@@ -23,28 +23,174 @@ public class Exam {
 		}
 	}
 
+
+	public static HashMap<String,String> map = new HashMap<>(6);
+
+	static {
+		map.put("reset", "reset what");
+		map.put("reset board", "board fault");
+		map.put("board add", "where to add");
+		map.put("board delete", "no board at all");
+		map.put("reboot backplane", "impossible");
+		map.put("backplane abort", "install first");
+	}
+
 	public static void main(String[] args){
 		Scanner sc = new Scanner(System.in);
-		long num = sc.nextLong();
-		//存储次数
-		int result = 0;
-		System.out.println(sulotion(num,result));
+		HashMap<String, Integer> map = new HashMap<>();
+		while (sc.hasNext()) {
+			String ipAndMask = sc.nextLine();
+			String[] split = ipAndMask.split("~");
+			String ip = split[0];
+			String mask = split[1];
+			int[] ints = Arrays.stream(ip.split("\\.")).mapToInt(Integer::valueOf).toArray();
+			if ((0 < ints[0] && ints[0] < 10) || (10 < ints[0] && ints[0] < 127)){
+				map.put("A",map.getOrDefault("A",0) + 1);
+			}else if (127 < ints[0] && ints[0] < 192) {
+				map.put("B",map.getOrDefault("B",0) + 1);
+			}else if (192 < ints[0] && ints[0] <= 223) {
+				map.put("C",map.getOrDefault("C",0) + 1);
+			}else if (224 <= ints[0] && ints[0] <= 239) {
+				map.put("D",map.getOrDefault("D",0) + 1);
+			}else if (240 <= ints[0] && ints[0] <= 255) {
+				map.put("E",map.getOrDefault("E",0) + 1);
+			}else if (0 == ints[0] || ints[0] == 127) {
+				map.put("不合法",map.getOrDefault("不合法",0) + 1);
+			}else if (10 == ints[0] || ints[0] == 172 || ints[0] == 192 ) {
+				map.put("私有",map.getOrDefault("私有",0) + 1);
+			}
 
+		}
+	}
+
+	/**
+	 * 24点
+	 */
+	private static void extracted26() {
+		Scanner sc = new Scanner(System.in);
+		while (sc.hasNext()) {
+			int[] num = new int[4];
+			int[] visit = new int[4];
+			boolean flag = false;
+			for (int i = 0; i < 4; i++) {
+				num[i] = sc.nextInt();
+			}
+			for (int i = 0; i < num.length; i++) {
+				visit[i] = 1;
+				if (cal24(num,visit,num[i])) {
+					flag = true;
+					break;
+				}
+			}
+
+			System.out.println(flag);
+		}
+	}
+
+	private static boolean cal24(int[] num, int[] visit, int temp) {
+		for (int i = 0; i < num.length; i++) {
+			if (visit[i] == 0) {
+				visit[i] = 1;
+				if (cal24(num,visit,temp + num[i]) || cal24(num,visit,temp - num[i]) ||
+						cal24(num,visit,temp * num[i]) || (temp % num[i] == 0 && cal24(num,visit,temp / num[i]))) {
+					return true;
+				}
+				visit[i] = 0;
+			}
+		}
+		if (temp == 24) {
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * HJ66,配置文件恢复
+	 * 命   令				执   行
+	 * reset				reset what
+	 * reset board			board fault
+	 * board add			where to add
+	 * board delete			no board at all
+	 * reboot backplane		impossible
+	 * backplane abort		install first
+	 * he he				unknown command
+	 */
+	private static void extracted25() {
+		Scanner sc = new Scanner(System.in);
+		while (sc.hasNext()) {
+			String command = sc.nextLine();
+			String[] split = command.split(" ");
+			boolean flag = false;
+			int count = 0;
+			String resultKey = "";
+			for (String key : map.keySet()) {
+				String[] s = key.split(" ");
+				if (split.length == 1 && s.length == 1) {
+					if (key.startsWith(split[0])) {
+						flag = false;
+						if (count > 0) {//匹配了两条命令
+							flag = true;
+							count++;
+						}else {
+							count++;
+							resultKey = key;
+						}
+					}
+				} else if (split.length == 2 && s.length == 2) {
+					if (s[0].startsWith(split[0]) && s[1].startsWith(split[1])) {
+						flag = false;
+						if (count > 0) {//匹配了两条命令
+							count++;
+							flag = true;
+							break;
+						}else {
+							count++;
+							resultKey = key;
+						}
+					}
+				}else {
+					flag = true;
+				}
+			}
+			if (flag && count != 1) {
+				System.out.println("unknown command");
+			}else if (count == 1){
+				System.out.println(map.get(resultKey));
+			}
+		}
+	}
+
+	/**
+	 * 给定一个数，通过/2,+-1，最快得到1的步骤数
+	 */
+	private static void getScanner() {
+		Scanner sc = new Scanner(System.in);
+		long num = sc.nextLong();
+
+		System.out.println(sulotion(num));
 		sc.close();
 	}
 
-	public static int sulotion(long l,int count) {
-
-		//定义结束标志
-		if (l / 2 == 1){
-			count++;
-			return count;
+	public static int sulotion(long l) {
+		if (l == 1) {
+			return 1;
 		}
-		if (l % 2 == 0) {
-			count += sulotion(l / 2,count);
-		}else {
-			//取+1和-1的最小值
-			count += Math.min(sulotion(l + 1,count),sulotion(l-1,count));
+		if (l == 3) {
+			return 2;
+		}
+		int count = 0;
+		while (l != 1) {
+			if (l % 2 == 0) {
+				count++;
+				l = l /2;
+			}else {
+				if(l%4==1){
+					l--;
+					count++;
+				}else {
+					l++;
+					count++;
+				}
+			}
 		}
 		return count;
 	}
